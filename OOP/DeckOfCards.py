@@ -1,44 +1,80 @@
 from random import shuffle
 
 class Card:
-    def __init__(self, value, suit):
+
+    def __init__(self, suit, value):
         self.value = value
         self.suit = suit
     
     def __repr__(self):
-        return f" {self.value} of {self.suit}"
+        return f"{self.value} of {self.suit}"
 
 class Deck:
-        def __init__(self):
-            suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
-            values = ['A', '2','3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
-            self.cards = [Card(value, suit) for suit in suits for value in values]
-            print(self.cards)
 
-        def __repr__ (self):
-            return f"Deck of {self.count()} Cards"
+    def __init__(self):
+        suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
+        values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+        self.cards = [Card(suit, value) for suit in suits for value in values]
 
-        def count(self):
-            return len(self.cards)
-        
-        def _deal(self,num):
-            count = self.count()
-            actual = min([count, num])
-            if count == 0:
-                raise ValueError ("All Cards have been dealt")
-            cards = self.cards[-actual:]
-            self.cards = self.cards[-actual:]
+    def __repr__(self):
+        return f"Deck of {self.count()} cards."
 
-        def deal_card(self):
-            return self.deal(1)[0]
-        def deal_hand(self, hand_size):
-            return self._deal(hand_size)
-        def shuffle(self):
-            if self.count != 52:
-                raise ValueError("Only full decks can be shuffled")
-            shuffle(self.cards)
-            return self
+    def __iter__(self):
+        return iter(self.cards)
 
-d = Deck()
+    # VERSION USING A GENERATOR FUNCTION 
+    # (covered in the next video)
+    # def __iter__(self):
+    #     for card in self.cards:
+    #         yield card
 
-print(d)
+    def reset(self):
+        suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
+        values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+        self.cards = [Card(suit, value) for suit in suits for value in values]
+        return self
+
+    def count(self):
+        return len(self.cards)
+
+    def _deal(self, num):
+        """
+        Return a list of cards dealt
+        """
+        count = self.count()
+        actual = min([num, count])  # make sure we don't try to over-deal
+
+        if count == 0:
+            raise ValueError("All cards have been dealt")
+
+        if actual == 1:
+            return [self.cards.pop()]
+
+        cards = self.cards[-actual:]  # slice off the end
+        self.cards = self.cards[:-actual]  # adjust cards
+
+        return cards
+    def shuffle(self):
+        if self.count() < 52:
+            raise ValueError("Only full decks can be shuffled")
+
+        shuffle(self.cards)
+        return self
+
+    def deal_card(self):
+        """
+        Returns a single Card
+        """
+        return self._deal(1)[0]
+
+    def deal_hand(self, hand_size):
+        """
+        Returns a list of Cards
+        """
+        return self._deal(hand_size)
+
+my_deck = Deck()
+my_deck.shuffle()
+
+for card in my_deck:
+    print(card)
