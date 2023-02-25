@@ -1,12 +1,14 @@
-from blockchain import Blockchain
 from uuid import uuid4
+
+from blockchain import Blockchain
 from verification import Verification
 
 class Node:
     def __init__(self):
-        self.id = uuid4()
+        # self.id = str(uuid4())
+        self.id = 'Chris'
         self.blockchain = Blockchain(self.id)
-        
+
     def get_transaction_value(self):
         """ Returns the input of the user (a new transaction amount) as a float. """
         # Get the user input, transform it from a string to a float and store it in user_input
@@ -14,12 +16,10 @@ class Node:
         tx_amount = float(input('Your transaction amount please: '))
         return tx_recipient, tx_amount
 
-
     def get_user_choice(self):
         """Prompts the user for its choice and return it."""
         user_input = input('Your choice: ')
         return user_input
-
 
     def print_blockchain_elements(self):
         """ Output all blocks of the blockchain. """
@@ -57,8 +57,7 @@ class Node:
             elif user_choice == '3':
                 self.print_blockchain_elements()
             elif user_choice == '4':
-                verifier = Verification()
-                if verifier.verify_transactions(self.blockchain.open_transactions, self.blockchain.get_balance):
+                if Verification.verify_transactions(self.blockchain.open_transactions, self.blockchain.get_balance):
                     print('All transactions are valid')
                 else:
                     print('There are invalid transactions')
@@ -67,8 +66,7 @@ class Node:
                 waiting_for_input = False
             else:
                 print('Input was invalid, please pick a value from the list!')
-            verifier = Verification()
-            if not verifier.verify_chain(self.blockchain.chain):
+            if not Verification.verify_chain(self.blockchain.chain):
                 self.print_blockchain_elements()
                 print('Invalid blockchain!')
                 # Break out of the loop
@@ -76,3 +74,8 @@ class Node:
             print('Balance of {}: {:6.2f}'.format(self.id, self.blockchain.get_balance()))
         else:
             print('User left!')
+
+        print('Done!')
+
+node = Node()
+node.listen_for_input()
