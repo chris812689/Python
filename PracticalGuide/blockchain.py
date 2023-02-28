@@ -5,10 +5,11 @@ import json
 import pickle
 
 # Import two functions from our hash_util.py file. Omit the ".py" in the import
-from hash_util import hash_block
+from utility.hash_util import hash_block
+from utility.verification import Verification
 from block import Block
 from transaction import Transaction
-from verification import Verification
+
 
 # The reward we give to miners (for creating a new block)
 MINING_REWARD = 10
@@ -25,8 +26,18 @@ class Blockchain:
         self.load_data()
         self.hosting_node = hosting_node_id
 
+    @property
+    def chain(self):
+        return self.__chain[:]
+
+    @chain.setter
+    def chain(self, value):
+        self.__chain = value
+
     def load_data(self):
         """Initialize blockchain + open transactions data from a file."""
+        if self.hosting_node == None:
+            return False
         try:
             with open('blockchain.txt', mode='r') as f:
                 # file_content = pickle.loads(f.read())
@@ -59,6 +70,8 @@ class Blockchain:
 
     def save_data(self):
         """Save blockchain + open transactions snapshot to a file."""
+        if self.hosting_node == None:
+            return False
         try:
             with open('blockchain.txt', mode='w') as f:
                 saveable_chain = [block.__dict__ for block in [Block(block_el.index, block_el.previous_hash, [
