@@ -1,9 +1,10 @@
-""""Provides verification helper functions """
+"""Provides verification helper methods."""
 
 from utility.hash_util import hash_string_256, hash_block
 from wallet import Wallet
 
 class Verification:
+    """A helper class which offer various static and class-based verification and validation methods."""
     @staticmethod
     def valid_proof(transactions, last_hash, proof):
         """Validate a proof of work number and see if it solves the puzzle algorithm (two leading 0s)
@@ -36,7 +37,7 @@ class Verification:
         return True
 
     @staticmethod
-    def verify_transaction(transaction, get_balance, check_funds = True):
+    def verify_transaction(transaction, get_balance, check_funds=True):
         """Verify a transaction by checking whether the sender has sufficient coins.
 
         Arguments:
